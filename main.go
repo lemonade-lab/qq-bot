@@ -10,6 +10,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var Version = "0.0.1"
+
 func main() {
 	_ = godotenv.Load()
 

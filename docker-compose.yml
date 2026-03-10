@@ -1,0 +1,17 @@
+services:
+  qqbot-gateway:
+    build:
+      context: .
+      args:
+        - VERSION=0.0.1
+    image: qqbot-gateway:latest
+    container_name: qqbot-gateway
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    environment:
+      - TZ=Asia/Shanghai
+      - PORT=:9000
+      - GIN_MODE=release
+      - GATEWAY_WS_URL=wss://your-domain.com/websocket
+      - ADMIN_KEY=
