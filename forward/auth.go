@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -19,8 +20,19 @@ type authRequest struct {
 }
 
 type authResponse struct {
-	AccessToken string `json:"access_token"`
-	ExpiresIn   int    `json:"expires_in"`
+	AccessToken string      `json:"access_token"`
+	ExpiresIn   json.Number `json:"expires_in"`
+}
+
+// expiresInInt returns the expires_in value as int (handles both string "7200" and number 7200).
+func (r *authResponse) expiresInInt() int {
+	n, err := r.ExpiresIn.Int64()
+	if err != nil {
+		// try parsing the raw string
+		n2, _ := strconv.ParseInt(string(r.ExpiresIn), 10, 64)
+		return int(n2)
+	}
+	return int(n)
 }
 
 // FetchAccessToken calls QQ Bot API to validate credentials and get a token.
@@ -47,7 +59,7 @@ func FetchAccessToken(appID, secret string) (accessToken string, expiresIn int, 
 		return "", 0, fmt.Errorf("invalid credentials: %s", string(data))
 	}
 
-	return result.AccessToken, result.ExpiresIn, nil
+	return result.AccessToken, result.expiresInInt(), nil
 }
 
 // TokenManager periodically refreshes QQ Bot access_token.

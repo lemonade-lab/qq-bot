@@ -48,7 +48,7 @@ func HandleGetAppAccessToken(store *BotStore) gin.HandlerFunc {
 		}
 
 		// Register bot: derive Ed25519 keys, store token mapping
-		store.Register(req.AppID, req.ClientSecret, authResp.AccessToken, authResp.ExpiresIn)
+		store.Register(req.AppID, req.ClientSecret, authResp.AccessToken, authResp.expiresInInt())
 		log.Printf("[auth-proxy] bot=%s registered", req.AppID)
 
 		c.Data(http.StatusOK, "application/json", respBody)
