@@ -1,0 +1,34 @@
+services:
+  # Bubble 主应用服务
+  bubble-fast:
+    image: bubble:latest
+    container_name: bubble-fast
+    restart: unless-stopped
+    ports:
+      - "30080:8080"  # 这里和 k8s 保持一致，暴露 30080 端口。用于快速本地测试。
+    environment:
+      - TZ=Asia/Shanghai  # 时区设置（中国时区）
+      - DB_DRIVER=mysql    # 数据库驱动
+      - DATABASE_DSN=root:Mm002580!@tcp(host.docker.internal:3006)/bubble?charset=utf8mb4&parseTime=True&loc=
+      - REDIS_ADDR=redis-bubble:6379  # Redis 地址（如果使用容器内 Redis）
+      - REDIS_PASSWORD=                # Redis 密码（如果有）
+      - REDIS_DB=0                     # Redis 数据库编号
+      - ALLOWED_ORIGINS=https://bubble.alemonjs.com
+      # MinIO 配置
+      - MINIO_ENDPOINT=host.docker.internal:19000  # MinIO 端点（容器外访问）
+      - MINIO_ACCESS_KEY_ID=lemonade      # MinIO 访问密钥
+      - MINIO_SECRET_ACCESS_KEY=lemonade  # MinIO 密钥
+      - MINIO_USE_SSL=false               # 不使用SSL
+      - MINIO_BUCKET=bubble              # 默认存储桶
+      # LiveKit 配置 ✅
+      - LIVEKIT_URL=ws://host.docker.internal:7880
+      - LIVEKIT_API_KEY=APIm7qF8xK3pN9dL
+      - LIVEKIT_API_SECRET=secretW5nR2jH8tY6vX4cB9mP3qL7sF1kD
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # 允许访问主机服务
+    networks:
+      - bubble-fast-network
+
+networks:
+  bubble-fast-network:
+    driver: bridge

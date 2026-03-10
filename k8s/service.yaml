@@ -1,0 +1,45 @@
+# Kubernetes API 版本定义
+apiVersion: v1
+# 资源类型：Service - 用于将一组 Pod 暴露为网络服务
+kind: Service
+# 元数据定义
+metadata:
+  # Service 名称，在命名空间内唯一标识该服务
+  name: bubble-chat-service
+  # 所属命名空间，默认为 default
+  namespace: default
+  # 标签，用于标识和选择该服务
+  labels:
+    app: bubble-chat
+# Service 的规格定义
+spec:
+  type: NodePort              # Service 类型：NodePort - 在每个节点上开放静态端口，允许外部访问
+  # 端口配置列表
+  ports:
+  # HTTP 服务端口配置
+  - name: http                    # 端口名称，用于识别和引用
+    port: 80                      # Service 集群内部端口，集群内其他服务通过此端口访问
+    targetPort: http              # Pod 内部实际监听的端口名称（对应容器配置中的 ports.name）
+    nodePort: 30080               # 节点外部访问端口，在标准的 NodePort 范围 30000-32767 内
+    protocol: TCP                 # 网络协议类型
+  # 监控指标端口配置
+  - name: metrics                 # 端口名称
+    port: 9090                    # Service 集群内部监控指标采集端口
+    targetPort: metrics           # Pod 内部监控指标端口
+    nodePort: 31318               # 节点外部指标端口（可选）
+    protocol: TCP                 # 网络协议类型
+  # Pod 选择器：定义哪些 Pod 属于这个 Service
+  selector:
+    # 选择具有 app=bubble-chat 标签的 Pod
+    # 这些 Pod 将接收通过该 Service 转发的流量
+    app: bubble-chat
+  # 会话亲和性配置：确保来自同一客户端的请求路由到同一 Pod
+  # 对于聊天等有状态应用非常重要，保持 WebSocket 连接稳定性
+  sessionAffinity: ClientIP
+  # 会话亲和性详细配置
+  sessionAffinityConfig:
+    clientIP:
+      # 会话保持时间：10800秒 = 3小时
+      # 在此期间内，同一客户端IP的请求都会发送到同一个 Pod
+      # 确保用户会话一致性，适合长连接场景如 WebSocket 聊天
+      timeoutSeconds: 10800

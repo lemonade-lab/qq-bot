@@ -1,0 +1,10 @@
+[registry."docker.io"]
+  mirrors = [
+    "https://registry.cn-hangzhou.aliyuncs.com",
+    "https://mirror.ccs.tencentyun.com",
+    "https://dockerproxy.com",
+    "https://docker.m.daocloud.io",
+    "https://docker.mirrors.ustc.edu.cn",
+    "https://docker.nju.edu.cn",
+    "https://mirror.baidubce.com"
+  ]

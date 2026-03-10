@@ -1,0 +1,48 @@
+services:
+  # MySQL 数据库服务
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-bubble
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 'Mm002580!'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      TZ: Asia/Shanghai  # 设置时区
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./docker-data/mysql:/var/lib/mysql
+      - ./docker-mysql-init.sql:/docker-entrypoint-initdb.d/init.sql 
+    networks:
+      - bubble-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
+
+  # Redis 缓存服务
+  redis:
+    image: redis:latest
+    container_name: redis-bubble
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./docker-data/redis:/data
+      - ./docker-redis.conf:/etc/redis/redis.conf  # 确保配置文件存在
+    command: redis-server /etc/redis/redis.conf --appendonly yes
+    networks:
+      - bubble-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 10s
+      retries: 5
+
+networks:
+  bubble-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  redis-data:

@@ -1,0 +1,7516 @@
+basePath: /
+definitions:
+  models.Announcement:
+    properties:
+      author:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 公告作者
+      authorId:
+        type: integer
+      content:
+        type: string
+      createdAt:
+        type: string
+      guildId:
+        type: integer
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+  models.DmMessage:
+    properties:
+      authorId:
+        type: integer
+      content:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        description: 撤回时间，nil表示未撤回
+        type: string
+      fileMeta:
+        items:
+          type: integer
+        type: array
+      id:
+        type: integer
+      mentions:
+        description: '提及列表: [{type, id}]'
+        items:
+          type: integer
+        type: array
+      platform:
+        description: '消息来源设备: web, mobile, desktop'
+        type: string
+      replyTo:
+        allOf:
+        - $ref: '#/definitions/models.DmMessage'
+        description: 关联的被回复消息
+      replyToId:
+        description: 回复的消息ID
+        type: integer
+      tempId:
+        description: 临时消息ID，用于匹配WebSocket消息
+        type: string
+      threadId:
+        type: integer
+      type:
+        type: string
+    type: object
+  models.FavoriteMessage:
+    properties:
+      createdAt:
+        type: string
+      dmMessage:
+        allOf:
+        - $ref: '#/definitions/models.DmMessage'
+        description: 私聊消息内容
+      dmMessageId:
+        description: 私聊消息ID
+        type: integer
+      id:
+        type: integer
+      message:
+        allOf:
+        - $ref: '#/definitions/models.Message'
+        description: 扩展字段（不存储在数据库，仅用于API响应）
+      messageId:
+        description: 频道消息ID
+        type: integer
+      messageType:
+        description: '"channel" or "dm"'
+        type: string
+      userId:
+        description: 收藏者
+        type: integer
+    type: object
+  models.ForumPost:
+    properties:
+      author:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 作者信息
+      authorId:
+        description: 作者ID
+        type: integer
+      channelId:
+        description: 所属频道
+        type: integer
+      content:
+        description: 帖子内容（Markdown）
+        type: string
+      createdAt:
+        description: 创建时间
+        type: string
+      deletedAt:
+        description: 软删除
+        type: string
+      id:
+        type: integer
+      isLocked:
+        description: 是否锁定（禁止回复）
+        type: boolean
+      isPinned:
+        description: 是否置顶
+        type: boolean
+      replyCount:
+        description: 回复数量
+        type: integer
+      title:
+        description: 帖子标题
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+      viewCount:
+        description: 浏览次数
+        type: integer
+    type: object
+  models.ForumReply:
+    properties:
+      author:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 回复者信息
+      authorId:
+        description: 回复者ID
+        type: integer
+      content:
+        description: 回复内容（Markdown）
+        type: string
+      createdAt:
+        description: 创建时间
+        type: string
+      deletedAt:
+        description: 软删除
+        type: string
+      id:
+        type: integer
+      postId:
+        description: 所属帖子
+        type: integer
+      replyToId:
+        description: 回复的回复ID（支持嵌套回复）
+        type: integer
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
+  models.Guild:
+    properties:
+      autoJoinMode:
+        description: |-
+          AutoJoinMode 控制用户通过 "点加" 是否能直接加入服务器。
+          值域: require_approval | no_approval | no_approval_under_100
+          默认: require_approval
+        type: string
+      avatar:
+        description: 服务器头像文件路径(MinIO object name)
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      description:
+        description: 服务器简介
+        type: string
+      id:
+        type: integer
+      isPrivate:
+        description: 私密服务器，默认私密，无法被搜索
+        type: boolean
+      name:
+        type: string
+      ownerId:
+        type: integer
+    type: object
+  models.GuildJoinRequest:
+    properties:
+      createdAt:
+        type: string
+      guildId:
+        type: integer
+      handledAt:
+        type: string
+      handledBy:
+        type: integer
+      id:
+        type: integer
+      note:
+        type: string
+      status:
+        description: pending|approved|rejected
+        type: string
+      updatedAt:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 用户信息，不存储在数据库中
+      userId:
+        type: integer
+    type: object
+  models.Message:
+    properties:
+      author:
+        type: string
+      authorId:
+        type: integer
+      channelId:
+        type: integer
+      content:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        description: 撤回时间，nil表示未撤回
+        type: string
+      fileMeta:
+        items:
+          type: integer
+        type: array
+      id:
+        type: integer
+      mentions:
+        description: '提及列表: [{type, id, name?, avatar?}]'
+        items:
+          type: integer
+        type: array
+      platform:
+        description: '消息来源设备: web, mobile, desktop'
+        type: string
+      replyTo:
+        allOf:
+        - $ref: '#/definitions/models.Message'
+        description: 关联的被回复消息
+      replyToId:
+        description: 回复的消息ID
+        type: integer
+      tempId:
+        description: 临时消息ID，用于匹配WebSocket消息
+        type: string
+      type:
+        type: string
+    type: object
+  models.PinnedMessage:
+    properties:
+      channelId:
+        description: 频道消息时使用
+        type: integer
+      createdAt:
+        type: string
+      guildId:
+        description: 频道消息时使用
+        type: integer
+      id:
+        type: integer
+      messageId:
+        type: integer
+      pinnedBy:
+        description: 谁PIN的
+        type: integer
+      threadId:
+        description: 私聊消息时使用
+        type: integer
+    type: object
+  models.Role:
+    properties:
+      createdAt:
+        type: string
+      guildId:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      permissions:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      avatar:
+        description: 头像文件路径(MinIO object name)
+        type: string
+      banner:
+        description: 横幅背景图片路径(MinIO object name)
+        type: string
+      bannerColor:
+        description: '横幅背景颜色(如 #5865F2)'
+        type: string
+      bio:
+        description: 个人简介
+        type: string
+      createdAt:
+        type: string
+      email:
+        type: string
+      emailVerified:
+        type: boolean
+      id:
+        type: integer
+      isBot:
+        description: 机器人账号标记
+        type: boolean
+      isPrivate:
+        description: 私密账号，默认公开
+        type: boolean
+      name:
+        type: string
+      nickname:
+        description: 扩展字段（不存储在数据库，仅用于API响应）
+        type: string
+      status:
+        type: string
+      token:
+        type: string
+    type: object
+  service.PermissionInfo:
+    properties:
+      bit:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Simple chat server (Gin + Gorm)
+  title: Bubble Chat API
+  version: 0.1.0
+paths:
+  /api/announcements/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除公告（需要管理员权限）
+      parameters:
+      - description: Announcement ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 公告不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Delete announcement
+      tags:
+      - announcements
+      - announcements
+    get:
+      consumes:
+      - application/json
+      description: 获取公告详情
+      parameters:
+      - description: Announcement ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Announcement'
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 公告不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Get announcement
+      tags:
+      - announcements
+      - announcements
+  /api/applications:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Application payload
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create application (friend or guild join)
+      tags:
+      - me
+  /api/applications/{id}:
+    put:
+      parameters:
+      - description: Application ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: approved or rejected
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Approve/Reject application
+      tags:
+      - me
+  /api/blacklist:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List blacklist
+      tags:
+      - blacklist
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User to block
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            userId:
+              type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      summary: Add to blacklist
+      tags:
+      - blacklist
+  /api/blacklist/{userId}:
+    delete:
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      summary: Remove from blacklist
+      tags:
+      - blacklist
+  /api/bot/v1/pub/hot:
+    get:
+      parameters:
+      - description: Limit (1-50, 默认20)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List hot robots (by creation time)
+      tags:
+      - robot-public
+  /api/bot/v1/pub/search:
+    get:
+      parameters:
+      - description: 搜索关键词 (>=1 字符)
+        in: query
+        name: q
+        required: true
+        type: string
+      - description: Limit (默认20, 最大100)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Search robots by name
+      tags:
+      - robot-public
+  /api/channels:
+    get:
+      consumes:
+      - application/json
+      description: 列出某服务器的全部频道（用户需具备查看权限）
+      parameters:
+      - description: Guild ID
+        in: query
+        name: guildId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List channels
+      tags:
+      - channels
+    post:
+      consumes:
+      - application/json
+      description: 创建频道
+      parameters:
+      - description: '{guildId,name,type,parentId,categoryId}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create channel
+      tags:
+      - channels
+  /api/channels/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 软删除频道及其子频道（需要 PermManageChannels 权限）
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+          schema:
+            type: string
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 频道不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete channel (soft delete)
+      tags:
+      - channels
+  /api/channels/{id}/category:
+    put:
+      consumes:
+      - application/json
+      description: 设置频道所属分类
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{categoryId?: number|null}'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 频道不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Set channel category
+      tags:
+      - channels
+  /api/channels/{id}/livekit-token:
+    get:
+      consumes:
+      - application/json
+      description: 获取 LiveKit 房间 Token
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 频道不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "503":
+          description: LiveKit未配置
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get LiveKit token for channel
+      tags:
+      - channels
+  /api/channels/{id}/participants:
+    get:
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get channel participants
+      tags:
+      - channels
+  /api/channels/{id}/pins:
+    get:
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.PinnedMessage'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List pinned messages
+      tags:
+      - pins
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{messageId}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PinnedMessage'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Pin message
+      tags:
+      - pins
+  /api/channels/{id}/pins/{messageId}:
+    delete:
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Message ID
+        in: path
+        name: messageId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Unpin message
+      tags:
+      - pins
+  /api/channels/{id}/posts:
+    get:
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Limit (default 20)
+        in: query
+        name: limit
+        type: integer
+      - description: Offset (default 0)
+        in: query
+        name: offset
+        type: integer
+      - description: 'Sort by: latest, oldest, popular (default latest)'
+        in: query
+        name: sortBy
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ForumPost'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List forum posts
+      tags:
+      - forum
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{title, content}'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ForumPost'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create forum post
+      tags:
+      - forum
+  /api/channels/{id}/posts/{postId}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除论坛帖子（仅作者）
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 帖子不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete forum post
+      tags:
+      - forum
+    get:
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ForumPost'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get forum post
+      tags:
+      - forum
+    put:
+      consumes:
+      - application/json
+      description: 更新论坛帖子（仅作者）
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      - description: '{title, content}'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ForumPost'
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 帖子不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update forum post
+      tags:
+      - forum
+  /api/channels/{id}/posts/{postId}/lock:
+    post:
+      consumes:
+      - application/json
+      description: 锁定论坛帖子（需要管理频道权限）
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 帖子不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Lock forum post
+      tags:
+      - forum
+  /api/channels/{id}/posts/{postId}/pin:
+    post:
+      consumes:
+      - application/json
+      description: 置顶论坛帖子（需要管理频道权限）
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 帖子不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Pin forum post
+      tags:
+      - forum
+  /api/channels/{id}/posts/{postId}/replies:
+    get:
+      consumes:
+      - application/json
+      description: 列出论坛帖子的回复
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      - description: Limit (default 50)
+        in: query
+        name: limit
+        type: integer
+      - description: Offset (default 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ForumReply'
+            type: array
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 帖子不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List forum replies
+      tags:
+      - forum
+    post:
+      consumes:
+      - application/json
+      description: 创建论坛回复
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      - description: '{content}'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ForumReply'
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足或帖子已锁定
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 帖子不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create forum reply
+      tags:
+      - forum
+  /api/channels/{id}/posts/{postId}/replies/{replyId}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除论坛回复（仅作者）
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      - description: Reply ID
+        in: path
+        name: replyId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 回复不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete forum reply
+      tags:
+      - forum
+  /api/channels/{id}/stats:
+    get:
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get channel stats
+      tags:
+      - channels
+  /api/developer/v1/robots/{id}/privacy:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Robot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{isPrivate: boolean}'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Set robot privacy
+      tags:
+      - robot-developer
+  /api/dm/messages:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定私信线程中的消息列表，支持分页方向
+      parameters:
+      - description: Thread ID
+        in: query
+        name: threadId
+        required: true
+        type: integer
+      - description: Limit (default 50, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: id < beforeId
+        in: query
+        name: beforeId
+        type: integer
+      - description: id > afterId
+        in: query
+        name: afterId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List DM messages
+      tags:
+      - dm
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{threadId,content,replyToId}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Send DM message
+      tags:
+      - dm
+  /api/dm/messages/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 撤回私聊消息（只能撤回自己的消息）
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+          schema:
+            type: string
+        "400":
+          description: 消息已撤回
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足（非消息作者）
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 消息不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete DM message (recall)
+      tags:
+      - dm
+    put:
+      consumes:
+      - application/json
+      description: 编辑一条私聊消息（仅作者）并广播 DM_MESSAGE_UPDATE
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated content
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            content:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DmMessage'
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 非作者
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 消息不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update DM message
+      tags:
+      - dm
+  /api/dm/messages/with-users:
+    get:
+      consumes:
+      - application/json
+      description: 获取私聊消息列表，包含用户数据
+      parameters:
+      - description: Thread ID
+        in: query
+        name: threadId
+        required: true
+        type: integer
+      - description: Limit (default 50, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Return messages with id < beforeId (page up)
+        in: query
+        name: beforeId
+        type: integer
+      - description: Return messages with id > afterId (page down/live)
+        in: query
+        name: afterId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"messages\": [], \"users\": []}'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List DM messages with users
+      tags:
+      - dm
+  /api/dm/open:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{toUserId}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Open or get DM thread
+      tags:
+      - dm
+  /api/dm/threads:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List my DM threads
+      tags:
+      - dm
+  /api/dm/threads/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 软删除：只隐藏线程，不删除聊天记录
+      parameters:
+      - description: Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 非参与者
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 线程不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete DM thread
+      tags:
+      - dm
+  /api/dm/threads/{id}/block:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Block status
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            blocked:
+              type: boolean
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      summary: Block/Unblock DM thread
+      tags:
+      - dm
+  /api/dm/threads/{id}/livekit-token:
+    get:
+      consumes:
+      - application/json
+      description: 获取 LiveKit 房间 Token（用于私聊语音/视频）
+      parameters:
+      - description: DM Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 非参与者
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 线程不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "503":
+          description: LiveKit未配置
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get LiveKit token for DM thread
+      tags:
+      - dm
+  /api/dm/threads/{id}/pin:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Pin status
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            pinned:
+              type: boolean
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      summary: Pin/Unpin DM thread
+      tags:
+      - dm
+  /api/dm/threads/{id}/pins:
+    get:
+      consumes:
+      - application/json
+      description: 列出私聊中的置顶消息
+      parameters:
+      - description: Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: DM Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Message'
+            type: array
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 会话不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: List pinned DM messages
+      tags:
+      - pins
+      - pins
+    post:
+      consumes:
+      - application/json
+      - application/json
+      description: 置顶私聊消息
+      parameters:
+      - description: Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{messageId}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: integer
+          type: object
+      - description: DM Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 消息不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Pin DM message
+      tags:
+      - pins
+      - pins
+  /api/dm/threads/{id}/pins/{messageId}:
+    delete:
+      consumes:
+      - application/json
+      description: 取消置顶私聊消息
+      parameters:
+      - description: Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Message ID
+        in: path
+        name: messageId
+        required: true
+        type: integer
+      - description: DM Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Message ID
+        in: path
+        name: messageId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 消息不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Unpin DM message
+      tags:
+      - pins
+      - pins
+    put:
+      consumes:
+      - application/json
+      - application/json
+      description: 置顶私聊消息
+      parameters:
+      - description: Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{messageId}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: integer
+          type: object
+      - description: DM Thread ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Message ID
+        in: path
+        name: messageId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 消息不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Pin DM message
+      tags:
+      - pins
+      - pins
+  /api/email/verify:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{email,token}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      summary: Verify email
+      tags:
+      - auth
+  /api/email/verify/request:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{email}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Request email verification token
+      tags:
+      - auth
+  /api/emojis/delete:
+    post:
+      consumes:
+      - application/json
+      description: 删除自定义表情
+      parameters:
+      - description: '{path, guildId}'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 表情不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete emoji
+      tags:
+      - files
+  /api/enums/channel-types:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get channel type enums
+      tags:
+      - enums
+  /api/enums/status:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get status enums
+      tags:
+      - enums
+  /api/favorites:
+    get:
+      parameters:
+      - description: Limit (default 50, max 100)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.FavoriteMessage'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List favorite messages
+      tags:
+      - favorites
+  /api/favorites/{id}:
+    delete:
+      parameters:
+      - description: Favorite ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Unfavorite a message
+      tags:
+      - favorites
+  /api/favorites/channel:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{messageId}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Favorite a channel message
+      tags:
+      - favorites
+  /api/favorites/dm:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{dmMessageId}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Favorite a DM message
+      tags:
+      - favorites
+  /api/files/list:
+    get:
+      consumes:
+      - application/json
+      description: 列出用户上传的文件列表
+      parameters:
+      - description: File category
+        in: query
+        name: category
+        required: true
+        type: string
+      - description: User ID (optional, defaults to current user)
+        in: query
+        name: userId
+        type: integer
+      - description: Guild ID (for guild emojis)
+        in: query
+        name: guildId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List files
+      tags:
+      - files
+  /api/files/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 'File category (avatars, attachments, icons, default: avatars)'
+        in: formData
+        name: category
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Upload file
+      tags:
+      - files
+  /api/friends:
+    delete:
+      parameters:
+      - description: Friend User ID
+        in: query
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Remove friend
+      tags:
+      - friends
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List friends
+      tags:
+      - friends
+  /api/friends/{id}/nickname:
+    put:
+      consumes:
+      - application/json
+      - application/json
+      description: 设置好友备注
+      parameters:
+      - description: '{nickname}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      - description: '{nickname}'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 不是好友关系
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 用户不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Set friend nickname
+      tags:
+      - friends
+      - friends
+  /api/friends/{userId}/nickname:
+    put:
+      consumes:
+      - application/json
+      - application/json
+      description: 设置好友备注
+      parameters:
+      - description: Friend User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: '{nickname}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      - description: Friend user ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: '{nickname}'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 不是好友关系
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 用户不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Set friend nickname
+      tags:
+      - friends
+      - friends
+  /api/friends/accept:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{fromName}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Accept friend request
+      tags:
+      - friends
+  /api/friends/requests:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List incoming friend requests
+      tags:
+      - friends
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{toName}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Send friend request
+      tags:
+      - friends
+  /api/guilds:
+    get:
+      consumes:
+      - application/json
+      description: 返回当前用户加入的所有服务器列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List guilds (user's guilds only)
+      tags:
+      - guilds
+    post:
+      consumes:
+      - application/json
+      description: 创建服务器。返回的 Guild 对象包含字段 `autoJoinMode`，用以控制点加加入策略：
+      parameters:
+      - description: '{name}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create guild
+      tags:
+      - guilds
+  /api/guilds/{id}:
+    delete:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete guild (soft delete)
+      tags:
+      - guilds
+  /api/guilds/{id}/announcements:
+    get:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Announcement'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List announcements
+      tags:
+      - announcements
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{title,content}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Announcement'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create announcement
+      tags:
+      - announcements
+  /api/guilds/{id}/announcements/{announcementId}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除公告（需要管理员权限）
+      parameters:
+      - description: Announcement ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Announcement ID
+        in: path
+        name: announcementId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 公告不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Delete announcement
+      tags:
+      - announcements
+      - announcements
+    get:
+      consumes:
+      - application/json
+      description: 获取公告详情
+      parameters:
+      - description: Announcement ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Announcement ID
+        in: path
+        name: announcementId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Announcement'
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 公告不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Get announcement
+      tags:
+      - announcements
+      - announcements
+  /api/guilds/{id}/avatar:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{path}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update guild avatar
+      tags:
+      - guilds
+  /api/guilds/{id}/categories:
+    get:
+      consumes:
+      - application/json
+      description: 列出服务器的所有频道分类
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List channel categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: 创建频道分类
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{name}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create channel category
+      tags:
+      - categories
+  /api/guilds/{id}/categories/{categoryId}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除频道分类（所属频道变为无分类）
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Category ID
+        in: path
+        name: categoryId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 分类不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete channel category
+      tags:
+      - categories
+    put:
+      consumes:
+      - application/json
+      description: 更新频道分类名称
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Category ID
+        in: path
+        name: categoryId
+        required: true
+        type: integer
+      - description: '{name}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 分类不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update channel category
+      tags:
+      - categories
+  /api/guilds/{id}/channels/reorder:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Array of {id, sortOrder}
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Reorder channels
+      tags:
+      - channels
+  /api/guilds/{id}/channels/structured:
+    get:
+      consumes:
+      - application/json
+      description: 返回结构化的频道数据，包含分类及未分类频道，便于前端直接渲染
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get structured channels by guild
+      tags:
+      - channels
+  /api/guilds/{id}/description:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{description}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update guild description
+      tags:
+      - guilds
+  /api/guilds/{id}/join:
+    post:
+      consumes:
+      - application/json
+      description: 点击加入。行为受服务器 autoJoinMode 控制：no_approval 直接加入；no_approval_under_100
+        成员数<100 直接加入，否则提交申请；require_approval 提交申请等待审批
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 加入失败
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Join guild
+      tags:
+      - guilds
+  /api/guilds/{id}/join-requests:
+    get:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Items per page (default 20, max 100)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List guild join requests (with pagination)
+      tags:
+      - guild-join-requests
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Application note
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            note:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GuildJoinRequest'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Apply to join guild
+      tags:
+      - guild-join-requests
+  /api/guilds/{id}/join-requests/{requestId}/approve:
+    post:
+      consumes:
+      - application/json
+      description: 批准用户的服务器加入请求（需要管理员权限）
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Request ID
+        in: path
+        name: requestId
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 请求不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Approve guild join request
+      tags:
+      - guild-join-requests
+      - guild-join-requests
+  /api/guilds/{id}/join-requests/{requestId}/reject:
+    post:
+      consumes:
+      - application/json
+      description: 拒绝用户的服务器加入请求（需要管理员权限）
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Request ID
+        in: path
+        name: requestId
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 请求不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Reject guild join request
+      tags:
+      - guild-join-requests
+      - guild-join-requests
+  /api/guilds/{id}/join-requests/{userId}/approve:
+    post:
+      consumes:
+      - application/json
+      description: 批准用户的服务器加入请求（需要管理员权限）
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 请求不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Approve guild join request
+      tags:
+      - guild-join-requests
+      - guild-join-requests
+  /api/guilds/{id}/join-requests/{userId}/reject:
+    post:
+      consumes:
+      - application/json
+      description: 拒绝用户的服务器加入请求（需要管理员权限）
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 请求不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Reject guild join request
+      tags:
+      - guild-join-requests
+      - guild-join-requests
+  /api/guilds/{id}/join-requests/me:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户在特定服务器的加入请求状态
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GuildJoinRequest'
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 无请求记录
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Get user's guild join request status
+      tags:
+      - guild-join-requests
+      - guild-join-requests
+  /api/guilds/{id}/join-requests/my-status:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户在特定服务器的加入请求状态
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GuildJoinRequest'
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 无请求记录
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Get user's guild join request status
+      tags:
+      - guild-join-requests
+      - guild-join-requests
+  /api/guilds/{id}/leave:
+    post:
+      consumes:
+      - application/json
+      description: 退出指定服务器
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 退出失败
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Leave guild
+      tags:
+      - guilds
+  /api/guilds/{id}/members:
+    get:
+      consumes:
+      - application/json
+      description: 列出服务器成员列表，支持分页和游标分页
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Items per page (default 10, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: 'Cursor: return members with id < beforeId'
+        in: query
+        name: beforeId
+        type: integer
+      - description: 'Cursor: return members with id > afterId'
+        in: query
+        name: afterId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"data\": [], \"pagination\": {}}'
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 非成员
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List guild members
+      tags:
+      - members
+  /api/guilds/{id}/members/{memberId}/roles/{roleId}:
+    delete:
+      consumes:
+      - application/json
+      description: 移除成员的角色（需要管理角色权限）
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Role ID
+        in: path
+        name: roleId
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Member ID
+        in: path
+        name: memberId
+        required: true
+        type: integer
+      - description: Role ID
+        in: path
+        name: roleId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 角色或成员不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Remove role
+      tags:
+      - roles
+      - roles
+  /api/guilds/{id}/members/{userId}:
+    delete:
+      consumes:
+      - application/json
+      description: 踢出成员
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID to kick
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 服务器或成员不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Kick member from guild
+      tags:
+      - guilds
+  /api/guilds/{id}/members/{userId}/mute:
+    delete:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID to unmute
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Unmute guild member
+      tags:
+      - guilds
+    put:
+      consumes:
+      - application/json
+      description: 禁言成员
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID to mute
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: '{duration: 3600}'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 服务器或成员不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Mute guild member
+      tags:
+      - guilds
+  /api/guilds/{id}/members/{userId}/nickname:
+    put:
+      consumes:
+      - application/json
+      description: Set a temporary nickname for a guild member (admins can set for
+        others, users can set for themselves)
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: '{nickname}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Set member temporary nickname
+      tags:
+      - guilds
+  /api/guilds/{id}/members/search:
+    get:
+      consumes:
+      - application/json
+      description: 搜索服务器成员（通过名称/昵称）
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Search query
+        in: query
+        name: q
+        required: true
+        type: string
+      - description: Limit (default 10, max 20)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"data\": []}'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 非成员
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Search guild members
+      tags:
+      - members
+  /api/guilds/{id}/permissions:
+    get:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user permissions in guild
+      tags:
+      - guilds
+  /api/guilds/{id}/privacy:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{isPrivate}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: boolean
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Set guild privacy
+      tags:
+      - guilds
+  /api/guilds/{id}/roles:
+    get:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List roles
+      tags:
+      - roles
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{name, permissions(uint64)}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create role
+      tags:
+      - roles
+  /api/guilds/{id}/roles/{roleId}:
+    delete:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Role ID
+        in: path
+        name: roleId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete role
+      tags:
+      - roles
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Role ID
+        in: path
+        name: roleId
+        required: true
+        type: integer
+      - description: '{name?, permissions?}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Role'
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update role
+      tags:
+      - roles
+  /api/guilds/{id}/roles/{roleId}/assign/{userId}:
+    post:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Role ID
+        in: path
+        name: roleId
+        required: true
+        type: integer
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Assign role
+      tags:
+      - roles
+  /api/guilds/{id}/roles/{roleId}/remove/{userId}:
+    post:
+      consumes:
+      - application/json
+      description: 移除成员的角色（需要管理角色权限）
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Role ID
+        in: path
+        name: roleId
+        required: true
+        type: integer
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Role ID
+        in: path
+        name: roleId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 角色或成员不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Remove role
+      tags:
+      - roles
+      - roles
+  /api/guilds/hot:
+    get:
+      consumes:
+      - application/json
+      description: 返回成员数量排名靠前的服务器列表
+      parameters:
+      - description: Limit (1-6, 默认6)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List hot guilds (by member count)
+      tags:
+      - guilds
+  /api/guilds/join-requests/me:
+    get:
+      consumes:
+      - application/json
+      - application/json
+      description: 批量获取用户在多个服务器的加入请求状态
+      parameters:
+      - description: Guild ID array
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            guildIds:
+              items:
+                type: integer
+              type: array
+          type: object
+      - description: Comma-separated guild IDs
+        in: query
+        name: guild_ids
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.GuildJoinRequest'
+            type: array
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Get user's guild join request status batch
+      tags:
+      - guild-join-requests
+      - guild-join-requests
+  /api/guilds/join-requests/my-status/batch:
+    post:
+      consumes:
+      - application/json
+      - application/json
+      description: 批量获取用户在多个服务器的加入请求状态
+      parameters:
+      - description: Guild ID array
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            guildIds:
+              items:
+                type: integer
+              type: array
+          type: object
+      - description: Comma-separated guild IDs
+        in: query
+        name: guild_ids
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.GuildJoinRequest'
+            type: array
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Get user's guild join request status batch
+      tags:
+      - guild-join-requests
+      - guild-join-requests
+  /api/guilds/reorder:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Array of {id, sortOrder}
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Reorder guilds
+      tags:
+      - guilds
+  /api/guilds/search:
+    get:
+      parameters:
+      - description: 搜索关键词 (>=1 字符)
+        in: query
+        name: q
+        required: true
+        type: string
+      - description: Limit (默认20, 最大100)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Search guilds by name
+      tags:
+      - guilds
+  /api/limits:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              format: int64
+              type: integer
+            type: object
+      summary: Get global limits
+      tags:
+      - enums
+  /api/livekit/stats:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: LiveKit global stats
+      tags:
+      - livekit
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{email,password}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login by email/password
+      tags:
+      - auth
+  /api/logout:
+    post:
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Logout
+      tags:
+      - me
+  /api/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Me
+      tags:
+      - me
+  /api/me/applications:
+    get:
+      parameters:
+      - description: Limit (default 50, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: id < beforeId
+        in: query
+        name: beforeId
+        type: integer
+      - description: id > afterId
+        in: query
+        name: afterId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List my applications
+      tags:
+      - me
+  /api/me/avatar:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{path}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update avatar
+      tags:
+      - me
+  /api/me/notifications:
+    get:
+      parameters:
+      - description: Limit (default 50, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: id < beforeId
+        in: query
+        name: beforeId
+        type: integer
+      - description: id > afterId
+        in: query
+        name: afterId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List my notifications
+      tags:
+      - me
+  /api/me/notifications/{id}/read:
+    put:
+      parameters:
+      - description: Notification ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Mark notification as read
+      tags:
+      - me
+  /api/me/notifications/read:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Notification IDs
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            ids:
+              items:
+                type: integer
+              type: array
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Mark multiple notifications as read
+      tags:
+      - me
+  /api/me/notifications/read-all:
+    put:
+      consumes:
+      - application/json
+      description: 将所有通知标记为已读
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "204":
+          description: no content
+          schema:
+            type: string
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Mark all notifications as read
+      tags:
+      - me
+      - notifications
+  /api/me/password:
+    put:
+      consumes:
+      - application/json
+      description: 修改当前用户密码
+      parameters:
+      - description: '{old,new}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 旧密码不匹配或新密码不符合策略
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Change password
+      tags:
+      - me
+  /api/me/privacy:
+    put:
+      consumes:
+      - application/json
+      description: 设置账号为私密或公开
+      parameters:
+      - description: '{isPrivate}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: boolean
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Set privacy setting
+      tags:
+      - me
+  /api/me/profile:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{name}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update profile
+      tags:
+      - me
+  /api/me/profile/extended:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{banner, bannerColor, bio}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update user profile fields (banner, bio, etc)
+      tags:
+      - me
+  /api/me/status:
+    put:
+      consumes:
+      - application/json
+      description: 更新在线状态（如 online/offline/busy/away）
+      parameters:
+      - description: '{status}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: 状态非法
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update status
+      tags:
+      - me
+  /api/messages:
+    get:
+      consumes:
+      - application/json
+      description: 获取频道消息列表，支持上下翻页与实时加载
+      parameters:
+      - description: Channel ID
+        in: query
+        name: channelId
+        required: true
+        type: integer
+      - description: Limit (default 50, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Return messages with id < beforeId (page up)
+        in: query
+        name: beforeId
+        type: integer
+      - description: Return messages with id > afterId (page down/live)
+        in: query
+        name: afterId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 频道不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List messages
+      tags:
+      - messages
+    post:
+      consumes:
+      - application/json
+      description: 在频道发送消息
+      parameters:
+      - description: '{channelId,content,replyToId,type,platform,fileMeta,tempId,mentions}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 频道不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Post message
+      tags:
+      - messages
+  /api/messages/{id}:
+    delete:
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete message (recall)
+      tags:
+      - messages
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{content}'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Message'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update message (edit)
+      tags:
+      - messages
+  /api/messages/with-users:
+    get:
+      consumes:
+      - application/json
+      description: 获取频道消息列表，包含用户数据
+      parameters:
+      - description: Channel ID
+        in: query
+        name: channelId
+        required: true
+        type: integer
+      - description: Limit (default 50, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Return messages with id < beforeId (page up)
+        in: query
+        name: beforeId
+        type: integer
+      - description: Return messages with id > afterId (page down/live)
+        in: query
+        name: afterId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"messages\": [], \"users\": []}'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 频道不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List messages with users
+      tags:
+      - messages
+  /api/mobile/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{refreshToken}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Refresh access token (mobile)
+      tags:
+      - auth
+  /api/moments:
+    get:
+      consumes:
+      - application/json
+      description: 获取朋友圈列表（时间线）
+      parameters:
+      - description: Limit (default 20, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Return moments with id < beforeId
+        in: query
+        name: beforeId
+        type: integer
+      - description: Filter by user ID
+        in: query
+        name: userId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"data\": []}'
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List moments
+      tags:
+      - moments
+    post:
+      consumes:
+      - application/json
+      description: 发布朋友圈
+      parameters:
+      - description: '{content,media,location,visibility}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"data\": moment}'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create moment
+      tags:
+      - moments
+  /api/moments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除朋友圈
+      parameters:
+      - description: Moment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"message\": \"deleted\"}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 朋友圈不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete moment
+      tags:
+      - moments
+  /api/moments/{id}/comments:
+    post:
+      consumes:
+      - application/json
+      description: 评论朋友圈
+      parameters:
+      - description: Moment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{content,replyToId,replyToUserId}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"data\": comment}'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 朋友圈不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Comment on moment
+      tags:
+      - moments
+  /api/moments/{id}/like:
+    delete:
+      consumes:
+      - application/json
+      description: 取消点赞
+      parameters:
+      - description: Moment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"message\": \"unliked\"}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Unlike moment
+      tags:
+      - moments
+    post:
+      consumes:
+      - application/json
+      description: 点赞朋友圈
+      parameters:
+      - description: Moment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"message\": \"liked\"}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 已点赞或参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 朋友圈不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Like moment
+      tags:
+      - moments
+  /api/moments/comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除评论
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"message\": \"deleted\"}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: 权限不足
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 评论不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete comment
+      tags:
+      - moments
+  /api/notifications/read:
+    post:
+      consumes:
+      - application/json
+      description: 将所有通知标记为已读
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "204":
+          description: no content
+          schema:
+            type: string
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Mark all notifications as read
+      tags:
+      - me
+      - notifications
+  /api/password/reset:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{email,token,newPassword}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      summary: Reset password
+      tags:
+      - auth
+  /api/password/reset/request:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{email}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Request password reset
+      tags:
+      - auth
+  /api/permissions:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service.PermissionInfo'
+            type: array
+      summary: Get all available permissions
+      tags:
+      - permissions
+  /api/register/email:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{email,password,name(optional)}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register by email
+      tags:
+      - auth
+  /api/robot/v1/bot/channels/{channelId}:
+    get:
+      parameters:
+      - description: Channel ID
+        in: path
+        name: channelId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BotAuth: []
+      summary: Get channel info
+      tags:
+      - robot-bot
+  /api/robot/v1/bot/channels/{channelId}/messages:
+    get:
+      parameters:
+      - description: Channel ID
+        in: path
+        name: channelId
+        required: true
+        type: integer
+      - description: Limit (default 50, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Message ID to get messages before
+        in: query
+        name: before
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BotAuth: []
+      summary: Get messages from channel
+      tags:
+      - robot-bot
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Channel ID
+        in: path
+        name: channelId
+        required: true
+        type: integer
+      - description: '{content,type,embed}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BotAuth: []
+      summary: Post message to channel
+      tags:
+      - robot-bot
+  /api/robot/v1/bot/channels/{channelId}/messages/{messageId}:
+    delete:
+      parameters:
+      - description: Channel ID
+        in: path
+        name: channelId
+        required: true
+        type: integer
+      - description: Message ID
+        in: path
+        name: messageId
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BotAuth: []
+      summary: Delete message
+      tags:
+      - robot-bot
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Channel ID
+        in: path
+        name: channelId
+        required: true
+        type: integer
+      - description: Message ID
+        in: path
+        name: messageId
+        required: true
+        type: integer
+      - description: '{content}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BotAuth: []
+      summary: Edit message
+      tags:
+      - robot-bot
+  /api/robot/v1/bot/dm/threads/{threadId}/messages:
+    get:
+      parameters:
+      - description: Thread ID
+        in: path
+        name: threadId
+        required: true
+        type: integer
+      - description: Limit (default 50, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Get messages before this ID
+        in: query
+        name: beforeId
+        type: integer
+      - description: Get messages after this ID
+        in: query
+        name: afterId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BotAuth: []
+      summary: Get DM messages
+      tags:
+      - robot-bot
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Thread ID
+        in: path
+        name: threadId
+        required: true
+        type: integer
+      - description: '{content}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BotAuth: []
+      summary: Send DM message
+      tags:
+      - robot-bot
+  /api/robot/v1/bot/guilds/{guildId}/channels:
+    get:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: guildId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BotAuth: []
+      summary: List guild channels
+      tags:
+      - robot-bot
+  /api/robot/v1/bot/guilds/{guildId}/members:
+    get:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: guildId
+        required: true
+        type: integer
+      - description: Limit (default 100, max 1000)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BotAuth: []
+      summary: List guild members
+      tags:
+      - robot-bot
+  /api/robot/v1/bot/guilds/{guildId}/members/{userId}:
+    get:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: guildId
+        required: true
+        type: integer
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BotAuth: []
+      summary: Get guild member
+      tags:
+      - robot-bot
+  /api/robot/v1/bot/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BotAuth: []
+      summary: Get bot info
+      tags:
+      - robot-bot
+  /api/robot/v1/bot/users/{userId}/dm:
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BotAuth: []
+      summary: Get or create DM thread with user
+      tags:
+      - robot-bot
+  /api/robot/v1/bot/webhooks/test:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Test payload
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BotAuth: []
+      summary: Test webhook
+      tags:
+      - robot-bot
+  /api/robot/v1/developer/robots:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List robots
+      tags:
+      - robot-developer
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{name,description(optional)}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a robot
+      tags:
+      - robot-developer
+  /api/robot/v1/developer/robots/{id}:
+    delete:
+      parameters:
+      - description: Robot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: Delete robot
+      tags:
+      - robot-developer
+    get:
+      parameters:
+      - description: Robot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get robot details
+      tags:
+      - robot-developer
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Robot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{name,description}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update robot
+      tags:
+      - robot-developer
+  /api/robot/v1/developer/robots/{id}/avatar:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Robot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{path: MinIO path}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update robot avatar
+      tags:
+      - robot-developer
+  /api/robot/v1/developer/robots/{id}/guilds/{guildId}/join:
+    post:
+      parameters:
+      - description: Robot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Guild ID
+        in: path
+        name: guildId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add robot to guild
+      tags:
+      - robot-developer
+  /api/robot/v1/developer/robots/{id}/reset-token:
+    post:
+      parameters:
+      - description: Robot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Reset robot token
+      tags:
+      - robot-developer
+  /api/robot/v1/developer/robots/{id}/stats:
+    get:
+      parameters:
+      - description: Robot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get robot statistics
+      tags:
+      - robot-developer
+  /api/robot/v1/developer/robots/{id}/webhook:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Robot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{webhookUrl}'
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update webhook URL
+      tags:
+      - robot-developer
+  /api/robot/v1/public/robots/{id}/public:
+    get:
+      parameters:
+      - description: Robot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get robot public info
+      tags:
+      - robot-public
+  /api/security/status:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Security status overview
+      tags:
+      - security
+  /api/share/guild/{id}:
+    get:
+      parameters:
+      - description: Guild ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get guild share info (public)
+      tags:
+      - share
+  /api/share/user/{id}:
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get user share info (public)
+      tags:
+      - share
+  /api/users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户详细信息
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 用户不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Get user detail
+      tags:
+      - users
+      - users
+  /api/users/{id}/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户详细信息
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 用户不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Get user detail
+      tags:
+      - users
+      - users
+  /api/users/{id}/greet:
+    post:
+      parameters:
+      - description: User ID to greet
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Greet user
+      tags:
+      - users
+  /api/users/{id}/guilds:
+    get:
+      consumes:
+      - application/json
+      description: 获取与指定用户的共同服务器
+      parameters:
+      - description: User ID to check
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Guild'
+            type: array
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 用户不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Get shared guilds
+      tags:
+      - users
+      - users
+  /api/users/{id}/is-friend:
+    get:
+      parameters:
+      - description: User ID to check
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"isFriend\": true, \"status\": \"accepted\"}'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Check if user is friend
+      tags:
+      - users
+  /api/users/{id}/shared-guilds:
+    get:
+      consumes:
+      - application/json
+      description: 获取与指定用户的共同服务器
+      parameters:
+      - description: User ID to check
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Guild'
+            type: array
+        "400":
+          description: 参数错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 未认证
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 用户不存在
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 服务器错误
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Get shared guilds
+      tags:
+      - users
+      - users
+  /api/users/search:
+    get:
+      parameters:
+      - description: 搜索关键词 (>=1 字符)
+        in: query
+        name: q
+        required: true
+        type: string
+      - description: Limit (默认10, 最大50)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Search users by name
+      tags:
+      - users
+  /api/validity:
+    get:
+      consumes:
+      - application/json
+      description: 信息有效性检查（无任何意义）
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Validity check
+      tags:
+      - me
+schemes:
+- http
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,64 @@
+services:
+  # Coturn TURN 服务器 (用于 NAT 穿透)
+  coturn:
+    image: coturn/coturn:latest
+    container_name: coturn-bubble
+    restart: unless-stopped
+    ports:
+      - "3478:3478/tcp"      # TURN TCP
+      - "3478:3478/udp"      # TURN UDP
+      - "5349:5349/tcp"      # TURN TLS
+    volumes:
+      - ./docker-coturn.conf:/etc/coturn/turnserver.conf:ro
+    networks:
+      - bubble-livekit-network
+    command: -c /etc/coturn/turnserver.conf
+
+  # Redis (LiveKit 依赖)
+  redis-bubble:
+    image: redis:7-alpine
+    container_name: redis-bubble-livekit
+    restart: unless-stopped
+    volumes:
+      - ./docker-data/redis-livekit:/data
+    networks:
+      - bubble-livekit-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    command: redis-server --appendonly yes
+
+  # LiveKit Server
+  livekit-bubble:
+    image: livekit/livekit-server:latest
+    container_name: livekit-bubble
+    restart: unless-stopped
+    ports:
+      - "7880:7880"          # WebRTC 信令 (WebSocket)
+      - "7881:7881"          # HTTP API
+      - "50000-50100:50000-50100/udp"  # RTP/UDP (调整范围以节省端口)
+    volumes:
+      - ./docker-livekit.yaml:/etc/livekit.yaml:ro
+    command: --config /etc/livekit.yaml
+    networks:
+      - bubble-livekit-network
+    depends_on:
+      redis-bubble:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # 允许访问主机服务
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:7881"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  bubble-livekit-network:
+    driver: bridge
+
+volumes:
+  redis-livekit-data:
+    driver: local

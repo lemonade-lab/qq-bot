@@ -1,0 +1,46 @@
+port: 7880
+rtc:
+  tcp_port: 7881
+  port_range_start: 50000
+  port_range_end: 50100
+  # 使用公网IP时，应设置false
+  use_external_ip: true
+  node_ip: host.docker.internal
+  stun_servers:
+    - host.docker.internal:3478
+  turn_servers:
+    - host: host.docker.internal
+      port: 3478
+      protocol: udp
+      username: bubble
+      credential: bubble123
+    - host: host.docker.internal
+      port: 3478
+      protocol: tcp
+      username: bubble
+      credential: bubble123
+
+redis:
+  # 使用内部 Redis 容器（推荐，避免外部 Redis 兼容性问题）
+  address: redis-bubble:6379
+  
+keys:
+  # API Key 和 Secret，请在生产环境中修改
+  APIm7qF8xK3pN9dL: secretW5nR2jH8tY6vX4cB9mP3qL7sF1kD
+
+logging:
+  level: info
+
+room:
+  # 房间超时配置
+  empty_timeout: 300 # 5 分钟无人自动关闭
+  max_participants: 50
+
+# Webhook 配置
+webhook:
+  # Webhook URL 列表
+  urls:
+    - http://host.docker.internal:8080/api/livekit/webhook
+  
+  # API Key (用于签名验证)
+  api_key: APIm7qF8xK3pN9dL
