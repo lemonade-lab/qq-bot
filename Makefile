@@ -32,15 +32,3 @@ format: ## go fmt
 
 lint: ## go vet
 	go vet ./...
-
-swagger: ## 生成/更新 Swagger 文档
-	@echo "生成 Swagger 文档..."
-	go run github.com/swaggo/swag/cmd/swag@latest init -g main.go -o docs
-
-docker-build: ## 本地构建 Docker 镜像
-	@echo "本地构建 Docker 镜像..."
-	docker build -t bubble:latest --build-arg VERSION=local-test .
-
-docker-run: ## 运行本地 Docker 镜像
-	@echo "运行本地 Docker 镜像..."
-	docker run --rm -p 8080:8080 bubble:latest
