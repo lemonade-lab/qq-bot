@@ -36,6 +36,11 @@ func main() {
 
 	r := gin.Default()
 
+	// 打招呼
+	r.GET("/", func(c *gin.Context) {
+		c.String(200, "QQ Bot WebSocket Gateway v%s", Version)
+	})
+
 	// API Proxy
 	r.POST("/app/getAppAccessToken", forward.HandleGetAppAccessToken(store))
 	r.GET("/gateway", forward.HandleGatewayAPI(store, gatewayWSURL))
