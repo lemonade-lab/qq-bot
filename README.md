@@ -21,7 +21,7 @@ cp .env.example .env
 ```dotenv
 PORT=:9000
 GIN_MODE=release
-GATEWAY_WS_URL=wss://your-domain.com/websocket
+GATEWAY_WS_URL=wss://<your-domain>/websocket
 ADMIN_KEY=your-admin-secret
 ```
 
@@ -43,7 +43,7 @@ ADMIN_KEY=your-admin-secret
 在 QQ 开放平台将 Webhook 回调地址设置为：
 
 ```
-https://your-domain.com/webhook/{你的app_id}
+https://<your-domain>/webhook/{你的app_id}
 ```
 
 ## API 端点
@@ -69,6 +69,6 @@ const BOTS_API_URL = 'https://bots.qq.com/app/getAppAccessToken';
 const API_URL = 'https://api.sgroup.qq.com/gateway';
 
 // 改为
-const BOTS_API_URL = 'https://your-domain.com/app/getAppAccessToken';
-const API_URL = 'https://your-domain.com/gateway';
+const BOTS_API_URL = 'https://<your-domain>/app/getAppAccessToken';
+const API_URL = 'https://<your-domain>/gateway';
 ```
